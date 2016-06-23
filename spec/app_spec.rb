@@ -32,6 +32,6 @@ describe 'The badcat-cse-as-a-service App' do
   it 'gets a badcat' do
     get '/badcat?token=x&team_domain=woo&text=boop'
     expect(last_response.status).to eq(200)
-    expect(last_response.body).to eq('{"response_type":"in_channel","text":"https://s-media-cache-ak0.pinimg.com/736x/4a/43/a4/4a43a4b6569cf8a197b6c9217de3f412.jpg","attachments":[{"text":"Cute Bug says Ohai | Ohai | Pinterest | So Cute and Animal: Cute Bug says Ohai: Funny"}]}')
+    expect(last_response.body).to include('{"response_type":"in_channel","text":"')
   end
 end

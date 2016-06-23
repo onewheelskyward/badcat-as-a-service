@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/config_file'
+require 'json'
 
 class App < Sinatra::Base
 
@@ -18,21 +19,35 @@ class App < Sinatra::Base
   end
 
   def check_auth(params)
-    unless settings.tokens.include? params[:token] and settings.team_domains.include? params[:team_domain]
-      puts "Token #{params[:token]} not found in #{settings.tokens} or #{params[:team_domain]} doesn't match #{settings.team_domains}"
-      false
-    end
+    # unless settings.tokens.include? params[:token] and settings.team_domains.include? params[:team_domain]
+    #   puts "Token #{params[:token]} not found in #{settings.tokens} or #{params[:team_domain]} doesn't match #{settings.team_domains}"
+    #   false
+    # end
     true
   end
 
-  def run_search(query, image = false)
-    result = OnewheelGoogle::search(query, settings.cse_id, settings.api_key, 'high', image)
+  def get_random_badcat
+    badcats = []
+    in_tweet = false
+    tweet = ''
+    zoom = File.read('badcat.txt')
+    zoom.split(/\n/).each do |line|
+      if line.match /Bad Joke Cat ‏@BadJokeCat/
+        in_tweet = true
+        next
+      end
 
-    unless result
-      halt 500, '{"message": "search failed to return results."}'
+      if line.match /\d+ retweets \d+ likes/
+        in_tweet = false
+        badcats.push tweet
+        tweet = ''
+      end
+
+      if in_tweet == true
+        tweet += line
+      end
     end
-
-    result
+    badcats.sample
   end
 
   get '/badcat*' do
@@ -40,10 +55,10 @@ class App < Sinatra::Base
 
     puts params[:response_url]
 
-    result = get_random_badcat params[:text]
+    result = get_random_badcat # params[:text]
 
-    { response_type: 'in_channel',
-      text: result
+    {response_type: 'in_channel',
+     text: result
     }.to_json
   end
 end
