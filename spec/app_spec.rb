@@ -23,12 +23,6 @@ def app
 end
 
 describe 'The badcat-cse-as-a-service App' do
-  before do
-    # allow(App).to receive(:check_auth).and_return(true)
-    # expect(Sinatra::Application).to receive(:check_auth).and_return(true)
-    # expect(Sinatra::Application).to receive(:tokens).and_return('x')
-  end
-
   it 'gets a badcat' do
     get '/badcat?token=x&team_domain=woo&text=boop'
     expect(last_response.status).to eq(200)
