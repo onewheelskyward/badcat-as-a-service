@@ -1,0 +1,6 @@
+.idea
+config.yml
+bin
+.bundle
+Gemfile.lock
+coverage
